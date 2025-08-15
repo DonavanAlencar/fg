@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Login from '../pages/Login/Login';
 import Dashboard from '../pages/Dashboard/Dashboard';
@@ -13,15 +13,16 @@ export default function RoutesIndex() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/kitchen" element={<Kitchen />} />
-        <Route path="/menu" element={<Menu />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/stock" element={<Stock />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/ingredients" element={<Ingredients />} />
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="kitchen" element={<Kitchen />} />
+        <Route path="menu" element={<Menu />} />
+        <Route path="orders" element={<Orders />} />
+        <Route path="stock" element={<Stock />} />
+        <Route path="categories" element={<Categories />} />
+        <Route path="ingredients" element={<Ingredients />} />
       </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
