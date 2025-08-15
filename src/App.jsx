@@ -1,5 +1,10 @@
 import RoutesIndex from './routes';
+import { ThemeProvider } from './theme/index.jsx';
 
 export default function App() {
-  return <RoutesIndex />;
+  return (
+    <ThemeProvider>
+      <RoutesIndex />
+    </ThemeProvider>
+  );
 }
