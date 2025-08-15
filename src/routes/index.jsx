@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import Login from '../pages/Login/Login';
 import Dashboard from '../pages/Dashboard/Dashboard';
@@ -10,6 +10,12 @@ import Categories from '../pages/Categories/Categories';
 import Ingredients from '../pages/Ingredients/Ingredients';
 
 export default function RoutesIndex() {
+  const { pathname } = useLocation();
+  const lowerPath = pathname.toLowerCase();
+  if (pathname !== lowerPath) {
+    return <Navigate to={lowerPath} replace />;
+  }
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
