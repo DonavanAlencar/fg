@@ -1,26 +1,67 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Hash, Eye, EyeOff } from 'lucide-react';
+import { Mail, Hash, Eye, EyeOff, HelpCircle } from 'lucide-react';
 import './Login.css';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('email');
+  const [activeTab, setActiveTab] = useState('pin');
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
-    pin: '',
+    pin: ['', '', '', ''],
     password: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'pin') {
+      setFormData(prev => ({ ...prev, pin: value }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const handlePinDigit = (digit) => {
+    const currentPin = [...formData.pin];
+    const emptyIndex = currentPin.findIndex(pin => pin === '');
+    
+    if (emptyIndex !== -1) {
+      currentPin[emptyIndex] = digit;
+      setFormData(prev => ({ ...prev, pin: currentPin }));
+      
+      // Auto-focus next field
+      if (emptyIndex < 3) {
+        const nextInput = document.getElementById(`pin-${emptyIndex + 1}`);
+        if (nextInput) nextInput.focus();
+      }
+    }
+  };
+
+  const handlePinBackspace = () => {
+    const currentPin = [...formData.pin];
+    const lastFilledIndex = currentPin.map((pin, index) => pin !== '' ? index : -1).filter(index => index !== -1).pop();
+    
+    if (lastFilledIndex !== undefined) {
+      currentPin[lastFilledIndex] = '';
+      setFormData(prev => ({ ...prev, pin: currentPin }));
+      
+      // Focus the cleared field
+      const input = document.getElementById(`pin-${lastFilledIndex}`);
+      if (input) input.focus();
+    }
+  };
+
+  const clearPin = () => {
+    setFormData(prev => ({ ...prev, pin: ['', '', '', ''] }));
+    // Focus first PIN field
+    const firstInput = document.getElementById('pin-0');
+    if (firstInput) firstInput.focus();
   };
 
   const validateForm = () => {
@@ -39,10 +80,9 @@ export default function Login() {
         newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
       }
     } else {
-      if (!formData.pin.trim()) {
-        newErrors.pin = 'PIN é obrigatório';
-      } else if (formData.pin.length < 4) {
-        newErrors.pin = 'PIN deve ter pelo menos 4 dígitos';
+      const pinString = formData.pin.join('');
+      if (pinString.length !== 4) {
+        newErrors.pin = 'PIN deve ter 4 dígitos';
       }
       
       if (!formData.password.trim()) {
@@ -80,13 +120,47 @@ export default function Login() {
   };
 
   const handleDemoLogin = () => {
-    setFormData({
-      email: 'admin@restaurant.com',
-      pin: '',
-      password: 'admin123'
-    });
-    setActiveTab('email');
+    if (activeTab === 'email') {
+      setFormData({
+        email: 'admin@restaurant.com',
+        pin: ['', '', '', ''],
+        password: 'admin123'
+      });
+    } else {
+      setFormData({
+        email: '',
+        pin: ['1', '2', '3', '4'],
+        password: 'admin123'
+      });
+    }
     setErrors({});
+  };
+
+  const handlePinInputChange = (index, value) => {
+    if (value.length <= 1 && /^\d*$/.test(value)) {
+      const newPin = [...formData.pin];
+      newPin[index] = value;
+      setFormData(prev => ({ ...prev, pin: newPin }));
+      
+      // Auto-focus next field if digit entered
+      if (value && index < 3) {
+        const nextInput = document.getElementById(`pin-${index + 1}`);
+        if (nextInput) nextInput.focus();
+      }
+      
+      // Clear error
+      if (errors.pin) {
+        setErrors(prev => ({ ...prev, pin: '' }));
+      }
+    }
+  };
+
+  const handlePinKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !formData.pin[index] && index > 0) {
+      // Move to previous field on backspace if current is empty
+      const prevInput = document.getElementById(`pin-${index - 1}`);
+      if (prevInput) prevInput.focus();
+    }
   };
 
   return (
@@ -147,24 +221,48 @@ export default function Login() {
             </div>
           ) : (
             <div className="form-group">
-              <label htmlFor="pin">PIN</label>
-              <div className="input-container">
-                <input
-                  id="pin"
-                  type="text"
-                  placeholder="Digite seu PIN"
-                  value={formData.pin}
-                  onChange={(e) => handleInputChange('pin', e.target.value)}
-                  className={errors.pin ? 'error' : ''}
-                  maxLength="6"
-                />
-                {errors.pin && (
-                  <div className="error-indicator" title={errors.pin}>
-                    <div className="error-dots"></div>
-                  </div>
-                )}
+              <label htmlFor="pin">PIN de Acesso</label>
+              <div className="pin-container">
+                {formData.pin.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`pin-${index}`}
+                    type="text"
+                    maxLength="1"
+                    value={digit}
+                    onChange={(e) => handlePinInputChange(index, e.target.value)}
+                    onKeyDown={(e) => handlePinKeyDown(index, e)}
+                    className={errors.pin ? 'error' : ''}
+                    placeholder=""
+                  />
+                ))}
               </div>
               {errors.pin && <span className="error-message">{errors.pin}</span>}
+              
+              <div className="keypad">
+                <div className="keypad-row">
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('1')}>1</button>
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('2')}>2</button>
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('3')}>3</button>
+                </div>
+                <div className="keypad-row">
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('4')}>4</button>
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('5')}>5</button>
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('6')}>6</button>
+                </div>
+                <div className="keypad-row">
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('7')}>7</button>
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('8')}>8</button>
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('9')}>9</button>
+                </div>
+                <div className="keypad-row">
+                  <button type="button" className="keypad-btn clear-btn" onClick={clearPin}>Limpar</button>
+                  <button type="button" className="keypad-btn" onClick={() => handlePinDigit('0')}>0</button>
+                  <button type="button" className="keypad-btn visibility-btn" onClick={() => setShowPassword(!showPassword)}>
+                    <Eye size={18} />
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -196,7 +294,12 @@ export default function Login() {
           </div>
 
           <div className="demo-info">
-            <span>Demo: admin@restaurant.com / admin123</span>
+            <span>
+              {activeTab === 'email' 
+                ? 'Demo: admin@restaurant.com / admin123'
+                : 'Demo: PIN 1234'
+              }
+            </span>
             <button type="button" className="demo-button" onClick={handleDemoLogin}>
               Usar Demo
             </button>
@@ -207,10 +310,14 @@ export default function Login() {
             className="login-btn"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Entrando...' : 'Entrar'}
+            {isSubmitting ? 'Entrando...' : activeTab === 'pin' ? 'Entrar com PIN' : 'Entrar'}
           </button>
         </form>
       </div>
+
+      <button className="help-button" title="Ajuda">
+        <HelpCircle size={20} />
+      </button>
     </div>
   );
 }

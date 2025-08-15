@@ -7,6 +7,7 @@
   background: linear-gradient(180deg, #f8f6f3 0%, #ffffff 100%);
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
 }
 
 .login-header {
@@ -171,6 +172,99 @@
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
+/* PIN Container Styles */
+.pin-container {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.pin-container input {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  background: white;
+  color: #1f2937;
+  transition: all 0.2s ease;
+}
+
+.pin-container input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.pin-container input.error {
+  border-color: #ef4444;
+}
+
+.pin-container input.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Keypad Styles */
+.keypad {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.keypad-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.keypad-btn {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 12px;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.keypad-btn:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.keypad-btn:active {
+  transform: translateY(0);
+}
+
+.keypad-btn.clear-btn {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 14px;
+}
+
+.keypad-btn.clear-btn:hover {
+  background: #fde68a;
+}
+
+.keypad-btn.visibility-btn {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.keypad-btn.visibility-btn:hover {
+  background: #bfdbfe;
+}
+
 .error-indicator {
   position: absolute;
   right: 12px;
@@ -260,7 +354,7 @@
 }
 
 .login-btn {
-  background: linear-gradient(90deg, #8b1538 0%, #ff8c00 100%);
+  background: linear-gradient(90deg, #e879f9 0%, #fbbf24 100%);
   color: white;
   border: none;
   padding: 16px;
@@ -276,7 +370,7 @@
 
 .login-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(139, 21, 56, 0.3);
+  box-shadow: 0 8px 25px rgba(232, 121, 249, 0.3);
 }
 
 .login-btn:active:not(:disabled) {
@@ -287,6 +381,31 @@
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Help Button */
+.help-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: #1f2937;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.help-button:hover {
+  background: #374151;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsividade */
@@ -321,9 +440,28 @@
     font-size: 13px;
   }
   
+  .pin-container input {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .keypad-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 16px;
+  }
+  
   .demo-info {
     flex-direction: column;
     gap: 8px;
     text-align: center;
+  }
+  
+  .help-button {
+    width: 40px;
+    height: 40px;
+    bottom: 16px;
+    right: 16px;
   }
 }
