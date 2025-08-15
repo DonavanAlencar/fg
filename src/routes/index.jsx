@@ -13,14 +13,14 @@ export default function RoutesIndex() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="kitchen" element={<Kitchen />} />
-        <Route path="menu" element={<Menu />} />
-        <Route path="orders" element={<Orders />} />
-        <Route path="stock" element={<Stock />} />
-        <Route path="categories" element={<Categories />} />
-        <Route path="ingredients" element={<Ingredients />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/kitchen" element={<Kitchen />} />
+        <Route path="/menu" element={<Menu />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/stock" element={<Stock />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/ingredients" element={<Ingredients />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
